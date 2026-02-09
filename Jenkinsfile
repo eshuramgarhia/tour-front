@@ -1,13 +1,16 @@
+
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS'   // Jenkins → Global Tool Configuration ch jo NodeJS name aa
+    }
+
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout SCM') {
             steps {
-                git url: 'https://github.com/eshuramgarhia/tour-front.git',
-                    branch: 'main',
-                    credentialsId: 'jenkins'
+                checkout scm
             }
         }
 
@@ -19,9 +22,21 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                bat 'set CI=false && npm run build'
+                bat '''
+                set CI=false
+                set NODE_OPTIONS=--max_old_space_size=4096
+                npm run build
+                '''
             }
         }
     }
-}
 
+    post {
+        success {
+            echo '✅ Build successful'
+        }
+        failure {
+            echo '❌ Build failed'
+        }
+    }
+}
