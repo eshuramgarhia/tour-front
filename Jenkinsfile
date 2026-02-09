@@ -1,45 +1,27 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = 'production'
-    }
-
     stages {
 
-        stage('Checkout Code') {
+        stage('Git Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'YOUR_GITHUB_REPO_URL'
+                git url: 'https://github.com/eshuramgarhia/tour-front.git',
+                    branch: 'main',
+                    credentialsId: 'jenkins'
             }
         }
 
-        stage('Install Backend Dependencies') {
+        stage('Install') {
             steps {
-                dir('tour_and_travel_mern-main') {
-                    sh 'npm install'
-                }
+                bat 'npm install'
             }
         }
 
-        stage('Build Frontend') {
+        stage('Build') {
             steps {
-                dir('tour_and_travel_mern-main') {
-                    sh 'npm run build'
-                }
-            }
-        }
-
-        stage('Start App with PM2') {
-            steps {
-                dir('tour_and_travel_mern-main') {
-                    sh '''
-                    pm2 delete tour-app || true
-                    pm2 start index.js --name tour-app
-                    pm2 save
-                    '''
-                }
+                bat 'npm run build'
             }
         }
     }
 }
+
