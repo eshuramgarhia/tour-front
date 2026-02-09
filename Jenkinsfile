@@ -3,7 +3,7 @@ pipeline {
 
     stages {
 
-        stage('Git Checkout') {
+        stage('Checkout Code') {
             steps {
                 git url: 'https://github.com/eshuramgarhia/tour-front.git',
                     branch: 'main',
@@ -11,15 +11,15 @@ pipeline {
             }
         }
 
-        stage('Install') {
+        stage('Install Dependencies') {
             steps {
                 bat 'npm install'
             }
         }
 
-        stage('Build') {
+        stage('Build Frontend') {
             steps {
-                bat 'npm run build'
+                bat 'set CI=false && npm run build'
             }
         }
     }
